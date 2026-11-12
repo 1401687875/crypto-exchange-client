@@ -1,0 +1,41 @@
+[package]
+name = "crypto-exchange-client"
+version = "0.2.0"
+edition = "2021"
+rust-version = "1.75"
+description = "Binance (USDⓈ-M futures, spot, coin-M), OKX and Hyperliquid REST/WebSocket clients"
+license = "MIT"
+readme = "README.md"
+keywords = ["binance", "okx", "hyperliquid", "trading", "exchange"]
+categories = ["api-bindings", "asynchronous"]
+
+[features]
+default = ["binance", "okx", "hyperliquid"]
+binance = []
+okx = ["dep:base64"]
+hyperliquid = ["dep:ethers", "dep:hyperliquid_rust_sdk", "dep:uuid"]
+
+[dependencies]
+anyhow = "1"
+base64 = { version = "0.22", optional = true }
+bigdecimal = { version = "0.3", features = ["serde"] }
+chrono = { version = "0.4", features = ["serde"] }
+ethers = { version = "2.0.14", features = ["eip712", "abigen"], optional = true }
+futures-util = "0.3.21"
+hex = "0.4"
+hmac = "0.12"
+hyperliquid_rust_sdk = { version = "0.6.0", optional = true }
+log = "0.4"
+reqwest = { version = "0.12", default-features = false, features = ["json", "rustls-tls"] }
+rust_decimal = { version = "1.34", features = ["serde"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+sha2 = "0.10"
+thiserror = "1.0"
+tokio = { version = "1.36.0", features = ["macros", "net", "rt-multi-thread", "sync", "time"] }
+tokio-tungstenite = { version = "0.21", features = ["rustls-tls-native-roots"] }
+uuid = { version = "1", features = ["v5"], optional = true }
+
+[dev-dependencies]
+env_logger = "0.11"
+tokio = { version = "1.36.0", features = ["full"] }
