@@ -14,7 +14,8 @@ pub use order::{
     BINANCE_USDT_FUTURES_API_URL,
 };
 pub use user_data::{
-    wait_for_usdt_trade_result, BinanceOrderTradeUpdate, BinanceOrderUpdate, BinanceUserDataClient,
+    subscribe_order_updates, wait_for_usdt_trade_result, BinanceOrderTradeUpdate,
+    BinanceOrderUpdate, BinanceUserDataClient,
 };
 pub use websocket::{
     build_kline_stream_name, build_ws_url, build_ws_url_with_type, connect_kline,

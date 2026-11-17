@@ -10,10 +10,10 @@ market & user-data WebSocket streams), plus OKX and Hyperliquid.
 
 ```toml
 [dependencies]
-crypto-exchange-client = { git = "https://github.com/1401687875/crypto-exchange-client", tag = "v0.3.0" }
+crypto-exchange-client = { git = "https://github.com/1401687875/crypto-exchange-client", tag = "v0.3.1" }
 
 # 只用币安（不引入 ethers / hyperliquid SDK）：
-# crypto-exchange-client = { git = "...", tag = "v0.3.0", default-features = false, features = ["binance"] }
+# crypto-exchange-client = { git = "...", tag = "v0.3.1", default-features = false, features = ["binance"] }
 ```
 
 | feature | 内容 | 默认 |

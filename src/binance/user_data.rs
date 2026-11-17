@@ -282,6 +282,14 @@ fn handle_user_data_message(raw: &str) -> Result<bool> {
     }
 }
 
+/// 订阅 `BinanceUserDataClient::run_order_updates` 收到的全部 `ORDER_TRADE_UPDATE`。
+///
+/// 只收到订阅之后的事件；处理太慢超过 1024 条积压时 `recv` 返回 `Lagged`，调用方应改用查单补齐。
+/// 私有流没启动时不会有事件。
+pub fn subscribe_order_updates() -> broadcast::Receiver<BinanceOrderTradeUpdate> {
+    event_bus().subscribe()
+}
+
 fn event_bus() -> &'static broadcast::Sender<BinanceOrderTradeUpdate> {
     static BUS: OnceLock<broadcast::Sender<BinanceOrderTradeUpdate>> = OnceLock::new();
     BUS.get_or_init(|| broadcast::channel(1024).0)
@@ -457,6 +465,20 @@ mod tests {
             Some("7497142668339527680")
         ));
         assert!(!matches_order(&update, "BTCUSDT", None, Some("other")));
+    }
+
+    #[tokio::test]
+    async fn subscribers_receive_published_updates() {
+        let mut receiver = subscribe_order_updates();
+        let mut update = filled_update();
+        update.order.client_order_id = "subscribe_test".to_string();
+        publish_order_update(update);
+        loop {
+            let received = receiver.recv().await.unwrap();
+            if received.order.client_order_id == "subscribe_test" {
+                break;
+            }
+        }
     }
 
     #[tokio::test]

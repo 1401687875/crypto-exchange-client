@@ -1,5 +1,9 @@
 # 更新记录
 
+## 0.3.1（2026-11-17）
+
+- `binance::subscribe_order_updates`：订阅私有订单流收到的全部 `ORDER_TRADE_UPDATE`（预挂单按事件检查成交用）
+
 ## 0.3.0（2026-11-17）
 
 合并 quantitative-service-rust mading 分支里对客户端的改动，旧接口签名保持兼容（下面注明的两处除外）。
