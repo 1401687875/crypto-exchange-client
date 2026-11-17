@@ -186,6 +186,23 @@ impl OkxApiClient {
         Ok(serde_json::from_str(&response_text)?)
     }
 
+    /// 当前未完成的委托（GET /api/v5/trade/orders-pending），`inst_type` 如 `SWAP`、`SPOT`。
+    /// 只返回第一页（最多 100 条），用于启动时清理本程序遗留的挂单。
+    pub async fn get_pending_orders(&self, inst_type: &str) -> Result<OkxResponse<OrderData>> {
+        let path = format!("/api/v5/trade/orders-pending?instType={}", inst_type);
+        let headers = self.build_headers("GET", &path, "")?;
+
+        let mut req_builder = self.client.get(format!("{}{}", self.base_url, path));
+        for (key, value) in headers {
+            req_builder = req_builder.header(&key, &value);
+        }
+
+        let response_text = req_builder.send().await?.text().await?;
+        log::debug!("OKX pending orders response: {}", response_text);
+
+        Ok(serde_json::from_str(&response_text)?)
+    }
+
     pub async fn get_ticker(&self, inst_id: &str) -> Result<OkxResponse<OkxTickerData>> {
         let path = format!("/api/v5/market/ticker?instId={}", inst_id);
         let response_text = self

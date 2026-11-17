@@ -12,32 +12,54 @@ pub struct TradeOrder {
 #[serde(rename_all = "camelCase")]
 pub struct BinaOrderResponse {
     pub order_id: u64,
+    #[serde(default)]
     pub symbol: String,
     pub status: String,
+    #[serde(default)]
     pub client_order_id: String,
+    #[serde(default)]
     pub price: String,
+    #[serde(default)]
     pub avg_price: String,
+    #[serde(default)]
     pub orig_qty: String,
     pub executed_qty: String,
+    #[serde(default)]
     pub cum_qty: String,
+    #[serde(default)]
     pub cum_quote: String,
+    #[serde(default)]
     pub time_in_force: String,
-    #[serde(rename = "type")]
+    #[serde(rename = "type", default)]
     pub order_type: String,
+    #[serde(default)]
     pub reduce_only: bool,
+    #[serde(default)]
     pub close_position: bool,
+    #[serde(default)]
     pub side: String,
+    #[serde(default)]
     pub position_side: String,
+    #[serde(default)]
     pub stop_price: String,
+    #[serde(default)]
     pub working_type: String,
+    #[serde(default)]
     pub price_protect: bool,
+    #[serde(default)]
     pub orig_type: String,
+    #[serde(default)]
     pub price_match: String,
+    #[serde(default)]
     pub self_trade_prevention_mode: String,
+    #[serde(default)]
     pub good_till_date: u64,
+    #[serde(default)]
     pub update_time: u64,
     pub activate_price: Option<String>,
     pub price_rate: Option<String>,
+    #[serde(default)]
+    pub fills: Vec<FillInfo>,
 }
 
 impl BinaOrderResponse {
@@ -125,7 +147,7 @@ pub struct SpotOrderResponse {
     pub fills: Vec<FillInfo>,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct FillInfo {
     pub price: String,

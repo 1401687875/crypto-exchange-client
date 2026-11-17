@@ -10,10 +10,10 @@ market & user-data WebSocket streams), plus OKX and Hyperliquid.
 
 ```toml
 [dependencies]
-crypto-exchange-client = { git = "https://github.com/<你的用户名>/crypto-exchange-client", tag = "v0.2.0" }
+crypto-exchange-client = { git = "https://github.com/1401687875/crypto-exchange-client", tag = "v0.3.0" }
 
 # 只用币安（不引入 ethers / hyperliquid SDK）：
-# crypto-exchange-client = { git = "...", tag = "v0.2.0", default-features = false, features = ["binance"] }
+# crypto-exchange-client = { git = "...", tag = "v0.3.0", default-features = false, features = ["binance"] }
 ```
 
 | feature | 内容 | 默认 |
@@ -138,6 +138,14 @@ BINANCE_API_KEY=.. BINANCE_API_SECRET=.. cargo run --example usdm_order_lifecycl
 
 `binance::BinanceOrderClient`（U 本位市价单、币本位限价/条件单、现货市价单、按客户端 ID 查单/撤单、账户流水）和
 `binance::run_kline_client`（K 线 WebSocket）保留不变，新代码建议用 `binance::usdm`。
+
+U 本位市价单 `create_usdt_market_order` 会核对成交：下单结果不明（超时、5xx）时只按客户端 ID 查询、不重发；
+响应里没有成交均价时先等私有流的 `ORDER_TRADE_UPDATE`，再轮询订单和成交明细；时间戳被拒（-1021）时同步服务器时间后重签一次。
+等私有流需要调用方先启动 `binance::BinanceUserDataClient::run_order_updates`（不启动也能用，只是改走轮询）。
+
+### 币安股票（`binance::stocks`）
+
+`BinanceStocksClient`：币安股票交易 SAPI（股票列表、精度、下单、查单、撤单、账户）和行情 WebSocket，价格和数量保持十进制字符串。
 
 ## OKX 与 Hyperliquid
 
