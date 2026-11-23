@@ -1,5 +1,17 @@
 # 更新记录
 
+## 0.4.0（2026-11-23）
+
+- 新增 `okx::swap`：OKX 永续合约（U 本位）客户端 `SwapClient`
+  - 交易规则、全部行情 / 单个行情
+  - 下单（市价、限价、只做 Maker）、撤单、查单（交易所订单号或客户端订单号）、未完成委托（自动翻页）、成交明细（近 3 天查不到再查近 3 个月）
+  - 持仓、余额、账户配置（持仓模式、账户模式）、设置持仓模式、设置杠杆、账单流水（近 7 天 / 近 3 个月，自动翻页）
+  - 止损条件单（标记价格触发、市价成交）：挂单、查未触发的、撤单
+  - 模拟盘：`SwapConfig::demo()`（请求带 `x-simulated-trading: 1`）
+  - 统一检查 OKX 的业务错误码：HTTP 200 但 `code` / `sCode` 不为 0 时返回 `ExchangeClientError::Api`
+  - 张数和币数换算：`coins_to_contracts`、`contracts_to_coins`
+- `ExchangeClientError::is_unknown_execution` 认 OKX 的 50001 / 50004 / 50013 / 50026；`is_rate_limited` 认 OKX 的 50011 / 50061
+
 ## 0.3.1（2026-11-17）
 
 - `binance::subscribe_order_updates`：订阅私有订单流收到的全部 `ORDER_TRADE_UPDATE`（预挂单按事件检查成交用）

@@ -10,7 +10,7 @@ pub enum ExchangeClientError {
     Order(String),
     #[error("validation error: {0}")]
     Validation(String),
-    /// 交易所返回的业务错误（HTTP 非 2xx，带交易所错误码）。
+    /// 交易所返回的业务错误（带交易所错误码）：币安是 HTTP 非 2xx；OKX 是响应里的 `code` / `sCode` 不为 0（HTTP 可能是 200）。
     #[error("exchange api error: http {status}, code {code}: {msg}")]
     Api { status: u16, code: i64, msg: String },
 }
@@ -22,11 +22,14 @@ impl ExchangeClientError {
     /// 必须按客户端订单 ID 查询订单后再决定下一步，不能直接重发。
     ///
     /// 包括：连接失败或超时（请求可能已到达交易所）、HTTP 5xx、
-    /// 币安 `-1006`（意外响应）和 `-1007`（等待后端超时，状态未知）。
+    /// 币安 `-1006`（意外响应）和 `-1007`（等待后端超时，状态未知）、
+    /// OKX `50001`（服务暂时不可用）、`50004`（接口请求超时，不代表成功或失败）、`50013`（系统繁忙）、`50026`（系统错误）。
     pub fn is_unknown_execution(&self) -> bool {
         match self {
             Self::Connection(_) => true,
-            Self::Api { status, code, .. } => *status >= 500 || matches!(code, -1006 | -1007),
+            Self::Api { status, code, .. } => {
+                *status >= 500 || matches!(code, -1006 | -1007 | 50001 | 50004 | 50013 | 50026)
+            }
             _ => false,
         }
     }
@@ -39,9 +42,9 @@ impl ExchangeClientError {
         }
     }
 
-    /// 是否触发了限频（HTTP 429 / 418，或币安 `-1003`）。
+    /// 是否触发了限频（HTTP 429 / 418，币安 `-1003`，OKX `50011` / `50061`）。
     pub fn is_rate_limited(&self) -> bool {
-        matches!(self, Self::Api { status, code, .. } if *status == 429 || *status == 418 || *code == -1003)
+        matches!(self, Self::Api { status, code, .. } if *status == 429 || *status == 418 || matches!(code, -1003 | 50011 | 50061))
     }
 }
 

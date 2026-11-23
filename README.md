@@ -19,7 +19,7 @@ crypto-exchange-client = { git = "https://github.com/1401687875/crypto-exchange-
 | feature | 内容 | 默认 |
 | --- | --- | --- |
 | `binance` | 币安：`binance::usdm`（U 本位合约，推荐）和旧版接口 | 是 |
-| `okx` | OKX REST 和 WebSocket | 是 |
+| `okx` | OKX REST 和 WebSocket；永续合约完整客户端在 `okx::swap` | 是 |
 | `hyperliquid` | Hyperliquid 下单、精度、WebSocket（依赖 ethers） | 是 |
 
 ## 币安 U 本位合约（`binance::usdm`）
